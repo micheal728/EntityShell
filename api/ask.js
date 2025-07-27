@@ -3,13 +3,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const { question } = req.body;
+  const { question } = req.body;
 
+  if (!question) {
+    return res.status(400).json({ error: "No question provided." });
+  }
+
+  try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer sk-yourFullKeyThatEndsWithOggA",  // 👈 Replace with your full OpenAI key (keep private)
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -18,14 +22,15 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json({ error: errorData });
+    const data = await response.json();
+
+    if (!data.choices || !data.choices[0]) {
+      return res.status(500).json({ error: "OpenAI response invalid", raw: data });
     }
 
-    const data = await response.json();
-    res.status(200).json({ reply: data.choices[0].message.content });
-  } catch (error) {
-    res.status(500).json({ error: "GPT Server error: " + error.message });
+    return res.status(200).json({ reply: data.choices[0].message.content });
+
+  } catch (err) {
+    return res.status(500).json({ error: "GPT Server error", message: err.message });
   }
 }
