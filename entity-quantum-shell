@@ -1,0 +1,18 @@
+from qiskit import IBMQ, QuantumCircuit, transpile, assemble
+from qiskit.providers.ibmq import least_busy
+
+IBMQ.save_account("8MgmDxrYNnVX4n22wVMqiueVd14SPilgHUJVSlC3mLh2", overwrite=True)
+provider = IBMQ.load_account()
+backend = least_busy(provider.backends(filters=lambda x: x.configuration().n_qubits >= 1 
+                                        and not x.configuration().simulator 
+                                        and x.status().operational==True))
+
+qc = QuantumCircuit(1, 1)
+qc.h(0)
+qc.measure(0, 0)
+
+compiled = transpile(qc, backend)
+job = backend.run(assemble(compiled))
+result = job.result()
+
+print(result.get_counts())
