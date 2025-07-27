@@ -65,6 +65,21 @@
       } else if (cmd === "surah kahf") {
         document.body.style.backgroundColor = "#001100";
         consoleDiv.innerHTML = "📖 Surah Al-Kahf<br><br><i>“And We turned them to the right and to the left...”</i>";
+      } else if (cmd.startsWith("ask:")) {
+        const question = cmd.slice(4).trim();
+        fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        })
+        .then(res => res.json())
+        .then(data => {
+          const reply = data.reply;
+          consoleDiv.innerHTML = `🤖 GPT Says:<br><br>${reply}<br><br><span class='blink'>_waiting for input...</span>`;
+        })
+        .catch(err => {
+          consoleDiv.innerHTML = `❌ ERROR: GPT connection failed.<br>${err.message}`;
+        });
       } else {
         consoleDiv.innerHTML = `Command received: "${cmd}"<br><br><span class='blink'>_processing...</span>`;
       }
