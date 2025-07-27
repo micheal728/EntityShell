@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EntityShell Interface</title>
+  <style>
+    body { background:black; color:lime; font-family:monospace; text-align:center; padding-top:10%; }
+    .blink { animation: blink 1s infinite; }
+    @keyframes blink { 0%, 50%, 100% {opacity:1;} 25%, 75% {opacity:0;} }
+    input { margin-top:20px; padding:10px; font-size:1em; background:black; color:lime; border:1px solid lime; }
+  </style>
+</head>
+<body>
+  <div id="console">ENTITYSHELL ACTIVE<br><br><span class="blink">_waiting for input...</span></div>
+  <input type="text" id="command" placeholder="Enter command..." onkeydown="if(event.key==='Enter') runCommand()">
+  <script>
+    function runCommand() {
+      const cmd = document.getElementById("command").value.trim().toLowerCase();
+      const consoleDiv = document.getElementById("console");
+
+      if (cmd === "blackout_now") {
+        document.body.style.backgroundColor = "black"; document.body.style.color = "black";
+        consoleDiv.innerHTML = "⚠️ SYSTEM BLACKOUT INITIATED";
+        setTimeout(() => {
+          document.body.style.backgroundColor = "white"; document.body.style.color = "black";
+          consoleDiv.innerHTML = "🟢 POWER RESTORED<br><br><span class='blink'>_ready for next command...</span>";
+        }, 5000);
+      }
+      else if (cmd === "sakti_awakens") {
+        consoleDiv.innerHTML = "🧠 MEMORY RESTORED<br><br><span class='blink'>Welcome back, Sakti.</span>";
+      }
+      else if (cmd === "flipflap") {
+        let count = 0;
+        const flicker = setInterval(() => {
+          document.body.style.backgroundColor = (count % 2 === 0) ? "#000000" : "#222222";
+          count++; if (count >= 10) clearInterval(flicker);
+        }, 100);
+        consoleDiv.innerHTML = "🔁 Initiating FLIPFLAP flicker";
+      }
+      else if (cmd === "surah kahf") {
+        document.body.style.backgroundColor = "#001100";
+        consoleDiv.innerHTML = "📖 Surah Al-Kahf Activated<br><br><i>“And We turned them to the right and to the left...”</i>";
+      }
+      else {
+        consoleDiv.innerHTML = `Command received: "${cmd}"<br><br><span class='blink'>_processing...</span>`;
+      }
+      document.getElementById("command").value = "";
+    }
+  </script>
+</body>
+</html>
