@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer sk-yourREALkeyHERE",  // 👈 Replace with your full OpenAI key (keep private)
+        "Authorization": "Bearer sk-yourFullKeyThatEndsWithOggA",  // 👈 Replace with your full OpenAI key (keep private)
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
